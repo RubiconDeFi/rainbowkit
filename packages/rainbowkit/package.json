@@ -1,5 +1,5 @@
 {
-  "name": "@rainbow-me/rainbowkit",
+  "name": "@rubicondefi/rainbowkit",
   "version": "0.8.0",
   "description": "The best way to connect a wallet",
   "files": [
@@ -70,7 +70,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rainbow-me/rainbowkit.git",
+    "url": "https://github.com/RubiconDeFi/rainbowkit.git",
     "directory": "packages/rainbowkit"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }
