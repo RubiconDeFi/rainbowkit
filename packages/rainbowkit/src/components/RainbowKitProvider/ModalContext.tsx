@@ -3,15 +3,17 @@ import React, {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
-import { useAccount, useNetwork } from 'wagmi';
+import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 import { useConnectionStatus } from '../../hooks/useConnectionStatus';
 import { AccountModal } from '../AccountModal/AccountModal';
 import { ChainModal } from '../ChainModal/ChainModal';
 import { ConnectModal } from '../ConnectModal/ConnectModal';
 import { useAuthenticationStatus } from './AuthenticationContext';
+import { useRainbowKitChains } from './RainbowKitChainContext';
 
 function useModalStateValue() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -62,8 +64,10 @@ export function ModalProvider({ children }: ModalProviderProps) {
   } = useModalStateValue();
 
   const connectionStatus = useConnectionStatus();
+  const rainbowKitChains = useRainbowKitChains();
   const { chain } = useNetwork();
   const chainSupported = !chain?.unsupported;
+  const { switchNetwork } = useSwitchNetwork();
 
   interface CloseModalsOptions {
     keepConnectModalOpen?: boolean;
@@ -84,6 +88,25 @@ export function ModalProvider({ children }: ModalProviderProps) {
     onConnect: () => closeModals({ keepConnectModalOpen: isUnauthenticated }),
     onDisconnect: () => closeModals(),
   });
+
+  useEffect(() => {
+    if (!switchNetwork || chainModalOpen || connectModalOpen) return;
+    if (
+      !chainSupported ||
+      !rainbowKitChains.find(({ id }) => id === chain?.id)
+    ) {
+      openChainModal();
+    }
+  }, [
+    chainSupported,
+    connectionStatus,
+    chain?.id,
+    openChainModal,
+    switchNetwork,
+    chainModalOpen,
+    connectModalOpen,
+    rainbowKitChains,
+  ]);
 
   return (
     <ModalContext.Provider

@@ -57,7 +57,7 @@ const wagmiClient = createClient({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider appInfo={demoAppInfo} chains={chains}>
+      <RainbowKitProvider appInfo={demoAppInfo} chains={[optimism, arbitrum]}>
         <Component {...pageProps} />
       </RainbowKitProvider>
     </WagmiConfig>
