@@ -65,6 +65,7 @@ export interface RainbowKitProviderProps {
   avatar?: AvatarComponent;
   modalSize?: ModalSizes;
   locale?: Locale;
+  chains?: readonly [Chain, ...Chain[]];
 }
 
 const defaultTheme = lightTheme();
@@ -76,6 +77,7 @@ export function RainbowKitProvider({
   coolMode = false,
   id,
   initialChain,
+  chains,
   locale,
   modalSize = ModalSizeOptions.WIDE,
   showRecentTransactions = false,
@@ -102,7 +104,7 @@ export function RainbowKitProvider({
   const avatarContext = avatar ?? defaultAvatar;
 
   return (
-    <RainbowKitChainProvider initialChain={initialChain}>
+    <RainbowKitChainProvider initialChain={initialChain} chains={chains}>
       <WalletButtonProvider>
         <I18nProvider locale={locale}>
           <CoolModeContext.Provider value={coolMode}>

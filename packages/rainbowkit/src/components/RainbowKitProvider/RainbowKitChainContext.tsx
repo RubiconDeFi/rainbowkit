@@ -20,23 +20,31 @@ const RainbowKitChainContext = createContext<RainbowKitChainContextValue>({
 interface RainbowKitChainProviderProps {
   initialChain?: Chain | number;
   children: ReactNode;
+  chains?: readonly [Chain, ...Chain[]];
 }
 
 export function RainbowKitChainProvider({
   children,
   initialChain,
+  chains,
 }: RainbowKitChainProviderProps) {
-  const { chains } = useConfig();
+  const { chains: configChains } = useConfig();
+  const ids = configChains.map((c) => c.id);
+
+  for (const chain of chains || []) {
+    if (!ids.includes(chain.id))
+      throw `Chain spagooty ${chain.name} (${chain.id}) is not provided in wagmi config`;
+  }
 
   return (
     <RainbowKitChainContext.Provider
       value={useMemo(
         () => ({
-          chains: provideRainbowKitChains(chains),
+          chains: provideRainbowKitChains(chains || configChains),
           initialChainId:
             typeof initialChain === 'number' ? initialChain : initialChain?.id,
         }),
-        [chains, initialChain],
+        [chains, initialChain, configChains],
       )}
     >
       {children}
